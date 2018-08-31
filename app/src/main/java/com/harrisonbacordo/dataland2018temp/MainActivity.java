@@ -3,6 +3,7 @@ package com.harrisonbacordo.dataland2018temp;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.bluetooth.BluetoothHeadset;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     Map<String, Integer> crashMap = new HashMap<>();
     String data = Data.DATA;
     boolean canGetLocation = false;
+    boolean initialNotificationSent = false;
     String previousStreetName = null;
 
     @Override
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
             String[] temp = dataVals[i].split(",");
             crashMap.put(temp[0], Integer.parseInt(temp[1]));
         }
-
 //        Ensure permissions are granted. Otherwise, request them.
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             try {
@@ -75,6 +76,15 @@ public class MainActivity extends AppCompatActivity {
             try {
 //                get current location
                 Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                int speed = (int) ((location.getSpeed()*3600)/1000);
+                speed = 15;
+                Log.e("SPEED", String.valueOf(speed));
+                if (speed < 15) {
+                    continue;
+                } else if(!initialNotificationSent) {
+                    this.initialNotificationSent = true;
+                    showNotification("Safe Driving", "Stat Here");
+                }
                 double longitude = location.getLongitude();
                 double latitude = location.getLatitude();
 //                Get street name from location
@@ -112,12 +122,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    void dailyNotification() {
-//        int num = new Random().nextInt(Data.STATS.length);
-//        String stat = Data.STATS[num];
-//
-//
-//    }
 
     void showNotification(String title, String content) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
