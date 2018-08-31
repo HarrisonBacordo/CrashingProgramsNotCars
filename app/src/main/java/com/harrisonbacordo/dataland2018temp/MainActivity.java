@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
 
         createNotificationChannel();
 
@@ -46,30 +49,30 @@ public class MainActivity extends AppCompatActivity {
             String[] temp = dataVals[i].split(",");
             crashMap.put(temp[0], Integer.parseInt(temp[1]));
         }
-        try {
-            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                String[] permissions = new String[2];
-                permissions[0] = Manifest.permission.ACCESS_COARSE_LOCATION;
-                permissions[1] = Manifest.permission.ACCESS_FINE_LOCATION;
-                ActivityCompat.requestPermissions(this, permissions, 5);
-            }
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            String streetName = addresses.get(0).getAddressLine(0);
-            streetName = streetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
-            Log.e("STREET NAME", streetName);
-            if (crashMap.containsKey(streetName)) {
-                Log.e("ALERT", "FOUND");
-                showNotification("DANGEROUS ROAD", streetName + " is a dangerous road. Be careful!");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                String[] permissions = new String[2];
+//                permissions[0] = Manifest.permission.ACCESS_COARSE_LOCATION;
+//                permissions[1] = Manifest.permission.ACCESS_FINE_LOCATION;
+//                ActivityCompat.requestPermissions(this, permissions, 5);
+//            }
+//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//            double longitude = location.getLongitude();
+//            double latitude = location.getLatitude();
+//            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+//            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+//            String streetName = addresses.get(0).getAddressLine(0);
+//            streetName = streetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
+//            Log.e("STREET NAME", streetName);
+//            if (crashMap.containsKey(streetName)) {
+//                Log.e("ALERT", "FOUND");
+//                showNotification("DANGEROUS ROAD", streetName + " is a dangerous road. Be careful!");
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
