@@ -64,11 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 //        Ensure permissions are granted. Otherwise, request them.
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            try {
-                startLocationUpdates();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            startLocationUpdates();
         } else {
             String[] permissions = new String[2];
             permissions[0] = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -120,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      *
      * @throws IOException
      */
-    private void startLocationUpdates() throws IOException {
+    private void startLocationUpdates() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 //        Another check required to avoid errors
@@ -168,11 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        try {
-            startLocationUpdates();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        startLocationUpdates();
     }
 
 
