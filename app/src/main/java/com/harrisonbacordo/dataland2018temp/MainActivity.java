@@ -9,6 +9,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         createNotificationChannel();
+
+
+//        Stats
 
         String[] dataVals = data.split("\n");
         for (int i = 0; i < dataVals.length; i++) {
@@ -73,6 +79,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+//    void dailyNotification() {
+//        int num = new Random().nextInt(Data.STATS.length);
+//        String stat = Data.STATS[num];
+//
+//
+//    }
+
     void showNotification(String title, String content) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -81,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        toneGenerator.startTone(ToneGenerator.TONE_CDMA_PIP, 100000);
 
 // notificationId is a unique int for each notification that you must define
         notificationManager.notify(78, mBuilder.build());

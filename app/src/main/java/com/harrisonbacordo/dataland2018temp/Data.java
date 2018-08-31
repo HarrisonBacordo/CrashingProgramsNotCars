@@ -5,6 +5,17 @@ package com.harrisonbacordo.dataland2018temp;
  */
 
 public class Data {
+
+    public static final String[] STATS = new String[]{
+        "we drive on the left-hand side of the road",
+                "it's easy to underestimate travelling times",
+                "our roads are narrower, more winding and sometimes steeper than you might expect",
+                "our roads are mostly two-way, with one lane in each direction - we have few motorways",
+                "not all railway crossings have active warnings",
+                "seat belts are compulsory for everyone in the vehicle",
+                "it's illegal to use a phone while driving."
+    };
+
     public static final String DATA = "SH 1N,2958\n" +
             "SH 2,1975\n" +
             "HIGH ST,372\n" +
