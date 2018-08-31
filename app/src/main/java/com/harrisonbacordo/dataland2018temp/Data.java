@@ -7,16 +7,29 @@ package com.harrisonbacordo.dataland2018temp;
 public class Data {
 
     public static final String[] STATS = new String[]{
-        "we drive on the left-hand side of the road",
-                "it's easy to underestimate travelling times",
-                "our roads are narrower, more winding and sometimes steeper than you might expect",
-                "our roads are mostly two-way, with one lane in each direction - we have few motorways",
-                "not all railway crossings have active warnings",
-                "seat belts are compulsory for everyone in the vehicle",
-                "it's illegal to use a phone while driving."
+            "we drive on the left-hand side of the road",
+        "it's easy to underestimate travelling times",
+        "our roads are narrower, more winding and sometimes steeper than you might expect",
+        "our roads are mostly two-way, with one lane in each direction - we have few motorways",
+        "not all railway crossings have active warnings",
+        "seat belts are compulsory for everyone in the vehicle",
+        "it's illegal to use a phone while driving.",
+        "Get a good night's sleep before driving, preferably eight hours.",
+        "Avoid driving during the hours when you would normally be sleeping.",
+        "If you normally have a mid-afternoon nap, then you should avoid driving at that time.",
+        "Make sure you are fully awake before driving following a period of sleep.",
+        "Share the driving when possible.",
+        "Don't drink even small amounts of alcohol. It will make the effects of fatigue much worse.",
+        "When taking long trips, plan your journey to include regular rest breaks, at least every 2 hours.",
+        "Ensure you get plenty of fresh air.",
+        "Snack on light, fresh foods. Avoid consuming fatty, sugary or carbohydrate-filled foods, which can make you feel tired.",
+        "If possible, avoid driving for several days following long distance air travel. Jetlag can creep up on you and you may not even feel tired.",
+        "Take a friend with you on your travel who will help you stay awake.",
+        "If seriously tired take a 15-20 minute nap (no more than this). This is effective in restoring alertness and focus as a short term solution.",
+        "Avoid taking any medication that may lead to drowsiness."
     };
 
-    public static final String DATA = "SH 1N,2958\n" +
+    public static final String DATA_TEST = "SH 1N,2958\n" +
             "SH 2,1975\n" +
             "HIGH ST,372\n" +
             "FERGUSSON DRIVE,317\n" +
@@ -2292,4 +2305,257 @@ public class Data {
             "FRANKLYN ROAD,1\n" +
             "HOLLY GROVE,1\n" +
             "MT WGTN OFF SBD,1\n";
+
+    public static final String DATA = "SH 1N,2086\n" +
+            "SH 2,531\n" +
+            "TITAHI BAY ROAD,223\n" +
+            "HUTT ROAD,213\n" +
+            "ADELAIDE ROAD,199\n" +
+            "TARANAKI ST,177\n" +
+            "WILLIS ST,169\n" +
+            "MAIN ROAD,155\n" +
+            "QUEENS DRIVE,151\n" +
+            "RIDDIFORD ST,149\n" +
+            "VICTORIA ST,142\n" +
+            "THE ESPLANADE,137\n" +
+            "WARSPITE AVENUE,126\n" +
+            "MUNGAVIN AVENUE,120\n" +
+            "THE TERRACE,119\n" +
+            "COURTENAY PLACE,112\n" +
+            "SH 58,112\n" +
+            "ORIENTAL PARADE,101\n" +
+            "KARORI ROAD,99\n" +
+            "TINAKORI ROAD,96\n" +
+            "JACKSON ST,95\n" +
+            "WAKEFIELD ST,93\n" +
+            "CUBA ST,92\n" +
+            "TORY ST,88\n" +
+            "EVANS BAY PARADE,82\n" +
+            "JOHNSONVILLE ROAD,78\n" +
+            "KENEPURU DRIVE,74\n" +
+            "WATERLOO QUAY,74\n" +
+            "GHUZNEE ST,73\n" +
+            "JERVOIS QUAY,73\n" +
+            "OHIRO ROAD,72\n" +
+            "THORNDON QUAY,69\n" +
+            "WALLACE ST,67\n" +
+            "NEWLANDS ROAD,66\n" +
+            "HIGH ST,65\n" +
+            "MOOREFIELD ROAD,64\n" +
+            "RANDWICK ROAD,62\n" +
+            "CUSTOMHOUSE QUAY,59\n" +
+            "CONSTABLE ST,56\n" +
+            "LAMBTON QUAY,56\n" +
+            "CABLE ST,56\n" +
+            "RAILWAY AVENUE,56\n" +
+            "DIXON ST,56\n" +
+            "FEATHERSTON ST,54\n" +
+            "MIDDLETON ROAD,54\n" +
+            "WOBURN ROAD,54\n" +
+            "BROOKLYN ROAD,51\n" +
+            "MARINE DRIVE,49\n" +
+            "CHAMPION ST,49\n" +
+            "DOWSE DRIVE,45\n" +
+            "WAIONE ST,45\n" +
+            "CAMBRIDGE TERRACE,45\n" +
+            "THE PARADE,44\n" +
+            "SH 2 WESTERN HUTT ROAD,43\n" +
+            "GRAYS ROAD,43\n" +
+            "LYTTELTON AVENUE,43\n" +
+            "SH 2 HUTT ROAD,43\n" +
+            "MIRAMAR AVENUE,42\n" +
+            "BOWEN ST,41\n" +
+            "GLENMORE ST,41\n" +
+            "KENT TERRACE,40\n" +
+            "BUNNY ST,40\n" +
+            "RUTHERFORD ST,40\n" +
+            "SH 1N MANA ESPLANADE,39\n" +
+            "RONGOTAI ROAD,39\n" +
+            "AOTEA QUAY,39\n" +
+            "RINTOUL ST,39\n" +
+            "TAKAPU ROAD,38\n" +
+            "COUTTS ST,37\n" +
+            "BROADWAY,37\n" +
+            "CRAWFORD ROAD,36\n" +
+            "WHITFORD BROWN AVENUE,35\n" +
+            "WEBB ST,35\n" +
+            "KAIWHARAWHARA ROAD,33\n" +
+            "ONEPU ROAD,33\n" +
+            "PARUMOANA ST,33\n" +
+            "WHITMORE ST,33\n" +
+            "SEAVIEW ROAD,31\n" +
+            "JOHN ST,30\n" +
+            "MEIN ST,30\n" +
+            "PHARAZYN ST,29\n" +
+            "MOLESWORTH ST,29\n" +
+            "SH 1N VIVIAN ST,29\n" +
+            "CHAYTOR ST,29\n" +
+            "ARO ST,29\n" +
+            "KELBURN PARADE,29\n" +
+            "BRODERICK ROAD,28\n" +
+            "MAKARA ROAD,28\n" +
+            "UPLAND ROAD,28\n" +
+            "MELLING LINK,27\n" +
+            "BAY ROAD,27\n" +
+            "MANNERS ST,27\n" +
+            "BEDFORD ST,26\n" +
+            "COBHAM DRIVE,26\n" +
+            "ONSLOW ROAD,24\n" +
+            "BURMA ROAD,23\n" +
+            "MOXHAM AVENUE,23\n" +
+            "CHURCHILL DRIVE,22\n" +
+            "TASMAN ST,22\n" +
+            "MAJORIBANKS ST,22\n" +
+            "KILBIRNIE CRESCENT,22\n" +
+            "HANSON ST,22\n" +
+            "RAIHA ST,21\n" +
+            "UDY ST,21\n" +
+            "LUDLAM CRESCENT,21\n" +
+            "OLD BUCKLE ST,21\n" +
+            "MARK AVENUE,21\n" +
+            "OHARIU VALLEY ROAD,21\n" +
+            "BRITOMART ST,21\n" +
+            "PORT ROAD,20\n" +
+            "MULGRAVE ST,20\n" +
+            "HAPPY VALLEY ROAD,20\n" +
+            "OMAPERE ST,20\n" +
+            "PARK ROAD,20\n" +
+            "SALAMANCA ROAD,20\n" +
+            "DANIELL ST,19\n" +
+            "KNIGHTS ROAD,19\n" +
+            "STEWART DRIVE,19\n" +
+            "MUNGAVIN OFF NBD,19\n" +
+            "PIRIE ST,19\n" +
+            "ABEL SMITH ST,19\n" +
+            "DIMOCK ST,19\n" +
+            "WASHINGTON AVENUE,18\n" +
+            "NORTHLAND ROAD,18\n" +
+            "HELSTON ROAD,18\n" +
+            "LAINGS ROAD,18\n" +
+            "SH 1N RUAHINE ST,18\n" +
+            "MURITAI ROAD,17\n" +
+            "SH 1N KARO DRIVE,17\n" +
+            "SH 58 PAREMATA ROAD,17\n" +
+            "WATERLOO ROAD,17\n" +
+            "SH 1N KARO,17\n" +
+            "WESTCHESTER DRIVE,17\n" +
+            "HAGLEY ST,17\n" +
+            "COLLINS AVENUE,17\n" +
+            "MASSEY ROAD,16\n" +
+            "NGAURANGA ON NBD,16\n" +
+            "RAROA ROAD,16\n" +
+            "BOULCOTT ST,16\n" +
+            "POSTGATE DRIVE,16\n" +
+            "OTTAWA ROAD,16\n" +
+            "HUTT ON NBD,16\n" +
+            "TAUHINU ROAD,16\n" +
+            "BRACKEN ROAD,16\n" +
+            "ACCESS ROAD,16\n" +
+            "WELLINGTON ROAD,15\n" +
+            "CENTENNIAL SBD,15\n" +
+            "BLOOMFIELD TERRACE,15\n" +
+            "HATAITAI ROAD,15\n" +
+            "MURPHY ST,15\n" +
+            "BIDWILL ST,15\n" +
+            "TODMAN ST,15\n" +
+            "PAPAKOWHAI ROAD,14\n" +
+            "WILLESTON ST,14\n" +
+            "SH 1N VIVIAN,14\n" +
+            "NORMANDALE ROAD,14\n" +
+            "TE PENE AVENUE,14\n" +
+            "HUNTER ST,14\n" +
+            "SLIP,14\n" +
+            "GARDEN ROAD,13\n" +
+            "MOUNT ALBERT ROAD,13\n" +
+            "KHANDALLAH ROAD,13\n" +
+            "HOROKIWI ROAD WEST,13\n" +
+            "DOWSE INTERCHANGE,13\n" +
+            "WADESTOWN ROAD,13\n" +
+            "KENMORE ST,13\n" +
+            "SH 1N COBHAM DRIVE,13\n" +
+            "WAITOA ROAD,13\n" +
+            "MARINE PARADE,13\n" +
+            "CORTINA AVENUE,13\n" +
+            "HAMPSHIRE ST,13\n" +
+            "MARSDEN ST,13\n" +
+            "BOX HILL,13\n" +
+            "SUTHERLAND ROAD,13\n" +
+            "AWARUA ST,13\n" +
+            "GRAFTON ROAD,13\n" +
+            "FRASER AVENUE,13\n" +
+            "STRATHMORE AVENUE,13\n" +
+            "BLOCK ROAD,12\n" +
+            "OWEN ST,12\n" +
+            "WILTON ROAD,12\n" +
+            "CALEDONIA ST,12\n" +
+            "TIRANGI ROAD,12\n" +
+            "CHILDERS TERRACE,12\n" +
+            "WARIPORI ST,12\n" +
+            "DEVON ST,12\n" +
+            "TAWA OFF NBD,12\n" +
+            "HALSWATER DRIVE,11\n" +
+            "PROSSER ST,11\n" +
+            "MOA POINT ROAD,11\n" +
+            "IRONSIDE ROAD,11\n" +
+            "MITCHELL ST,11\n" +
+            "NELSON ST,11\n" +
+            "DUNCAN TERRACE,11\n" +
+            "CASHMERE AVENUE,11\n" +
+            "SH 1N WELLINGTON ROAD,11\n" +
+            "Z CARPARK,11\n" +
+            "STEWART DUFF DRIVE,10\n" +
+            "TAKARAU GORGE ROAD,10\n" +
+            "FRANKMOORE AVENUE,10\n" +
+            "KEMP ST,10\n" +
+            "SEVERN ST,10\n" +
+            "NGAIO GORGE ROAD,10\n" +
+            "SHELLY BAY ROAD,10\n" +
+            "RAROA CRESCENT,10\n" +
+            "GLOAMING HILL,10\n" +
+            "HAMILTON ROAD,10\n" +
+            "GLASGOW ST,10\n" +
+            "MANSFIELD ST,10\n" +
+            "AOTEA ON NBD,10\n" +
+            "KOROKORO ROAD,10\n" +
+            "RUSSELL TERRACE,10\n" +
+            "PAREMATA CRESCENT,10\n" +
+            "SH 1N SUSSEX ST,10\n" +
+            "HALL ST,10\n" +
+            "MACDONALD CRESCENT,10\n" +
+            "CASTOR CRESCENT,10\n" +
+            "ELIZABETH ST,10\n" +
+            "HARRIS ST,10\n" +
+            "BOLTON ST,10\n" +
+            "ROXBURGH ST,10\n" +
+            "HUTCHISON ROAD,10\n" +
+            "GEAR TERRACE,10\n" +
+            "BALLANCE ST,9\n" +
+            "HOPPER ST,9\n" +
+            "HEREFORD ST,9\n" +
+            "CONCLUSION ST,9\n" +
+            "DUNDAS ST,9\n" +
+            "ALLEN ST,9\n" +
+            "COCKAYNE ROAD,9\n" +
+            "SH 1N WELLINGTON,9\n" +
+            "BEAZLEY AVENUE,9\n" +
+            "BOND ST,9\n" +
+            "HAWKESTONE ST,9\n" +
+            "BASSETT ROAD,9\n" +
+            "CORINNA ST,9\n" +
+            "PALLISER ROAD,9\n" +
+            "HAUMIA ST,9\n" +
+            "LYALL PARADE,9\n" +
+            "TROY ST,9\n" +
+            "COROMANDEL ST,9\n" +
+            "DISCOVERY DRIVE,9\n" +
+            "GRENADA DRIVE,9\n" +
+            "TAWA OFF SBD,9\n" +
+            "BRANDON ST,9\n" +
+            "BROUGHAM ST,9\n" +
+            "VICTORY CRESCENT,9\n" +
+            "CENTENNIAL NBD,9\n" +
+            "COLOMBO ST,9\n" +
+            "SIEVERS GROVE,9\n" +
+            "HILL ST,9\n" +
+            "MELROSE ROAD,9\n";
 }
