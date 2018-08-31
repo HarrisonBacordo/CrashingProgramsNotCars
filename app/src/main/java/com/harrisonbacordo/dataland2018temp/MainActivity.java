@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -25,61 +24,92 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     Map<String, Integer> crashMap = new HashMap<>();
     String data = Data.DATA;
+    boolean canGetLocation = false;
+    String previousStreetName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, MapsActivity.class);
-        startActivity(intent);
-
         createNotificationChannel();
-
-
-//        Stats
 
         String[] dataVals = data.split("\n");
         for (int i = 0; i < dataVals.length; i++) {
             String[] temp = dataVals[i].split(",");
             crashMap.put(temp[0], Integer.parseInt(temp[1]));
         }
-//        try {
-//            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                String[] permissions = new String[2];
-//                permissions[0] = Manifest.permission.ACCESS_COARSE_LOCATION;
-//                permissions[1] = Manifest.permission.ACCESS_FINE_LOCATION;
-//                ActivityCompat.requestPermissions(this, permissions, 5);
-//            }
-//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            double longitude = location.getLongitude();
-//            double latitude = location.getLatitude();
-//            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-//            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-//            String streetName = addresses.get(0).getAddressLine(0);
-//            streetName = streetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
-//            Log.e("STREET NAME", streetName);
-//            if (crashMap.containsKey(streetName)) {
-//                Log.e("ALERT", "FOUND");
-//                showNotification("DANGEROUS ROAD", streetName + " is a dangerous road. Be careful!");
-//            }
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
+//        Ensure permissions are granted. Otherwise, request them.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                startLocationUpdates();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            String[] permissions = new String[2];
+            permissions[0] = Manifest.permission.ACCESS_COARSE_LOCATION;
+            permissions[1] = Manifest.permission.ACCESS_FINE_LOCATION;
+            ActivityCompat.requestPermissions(this, permissions, 5);
+        }
+    }
+
+    /**
+     * Gets constant location updates from the geo
+     *
+     * @throws IOException
+     */
+    private void startLocationUpdates() throws IOException {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+//        Another check required to avoid errors
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        while (true) {
+            try {
+//                get current location
+                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+//                Get street name from location
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                String currentStreetName = addresses.get(0).getAddressLine(0);
+//                Skip checks if current street hasn't changed from previous
+                if (currentStreetName.equals(this.previousStreetName)) {
+                    return;
+                } else {
+//                    Parse street name to remove numbers
+                    this.previousStreetName = currentStreetName;
+                    currentStreetName = currentStreetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
+                    Log.e("STREET NAME", currentStreetName);
+//                    Check if dangerous road, if so, notify
+                    if (crashMap.containsKey(currentStreetName)) {
+                        Log.e("ALERT", "FOUND");
+                        showNotification("DANGEROUS ROAD", currentStreetName + " is a dangerous road. Be careful!");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
-
+        this.canGetLocation = true;
+        try {
+            startLocationUpdates();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 //    void dailyNotification() {
@@ -123,3 +153,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+
