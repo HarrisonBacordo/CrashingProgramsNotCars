@@ -1,16 +1,19 @@
 package com.harrisonbacordo.dataland2018temp;
 
+import android.Manifest;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -30,24 +33,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        createNotificationChannel();
 
         String[] dataVals = data.split("\n");
         for (int i = 0; i < dataVals.length; i++) {
             String[] temp = dataVals[i].split(",");
-            System.out.println(temp[0]);
             crashMap.put(temp[0], Integer.parseInt(temp[1]));
         }
-//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                String[] permissions = new String[2];
+                permissions[0] = Manifest.permission.ACCESS_COARSE_LOCATION;
+                permissions[1] = Manifest.permission.ACCESS_FINE_LOCATION;
+                ActivityCompat.requestPermissions(this, permissions, 5);
+            }
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(-41.249834, 174.810447, 1);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             String streetName = addresses.get(0).getAddressLine(0);
             streetName = streetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
             Log.e("STREET NAME", streetName);
             if (crashMap.containsKey(streetName)) {
                 Log.e("ALERT", "FOUND");
-                notifications();
+                showNotification("DANGEROUS ROAD", streetName + " is a dangerous road. Be careful!");
             }
 
         } catch (IOException e) {
@@ -56,31 +67,41 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void notifications() {
-        Log.e("WWWW", "WWWW");
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle("Notifications Example")
-                        .setContentText("This is a test notification");
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
 
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        builder.setSound(alarmSound);
-
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        builder.setContentIntent(contentIntent);
-        builder.setAutoCancel(true);
-        builder.setLights(Color.BLUE, 500, 500);
-        long[] pattern = {500,500,500,500,500,500,500,500,500};
-        builder.setVibrate(pattern);
-        builder.setStyle(new NotificationCompat.InboxStyle());
-// Add as notification
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(1, builder.build());
     }
+
+    void showNotification(String title, String content) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+// notificationId is a unique int for each notification that you must define
+        notificationManager.notify(78, mBuilder.build());
+
+
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("default", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 }
