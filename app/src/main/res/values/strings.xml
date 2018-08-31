@@ -2,4 +2,5 @@
     <string name="app_name">Dataland2018TEMP</string>
     <string name="channel_name">default</string>
     <string name="channel_description">The default channel</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
