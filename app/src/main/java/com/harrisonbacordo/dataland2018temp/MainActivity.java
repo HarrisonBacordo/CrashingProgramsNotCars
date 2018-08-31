@@ -3,7 +3,6 @@ package com.harrisonbacordo.dataland2018temp;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.bluetooth.BluetoothHeadset;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -28,11 +27,11 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    Map<String, Integer> crashMap = new HashMap<>();
-    String data = Data.DATA;
-    boolean canGetLocation = false;
-    boolean initialNotificationSent = false;
-    String previousStreetName = null;
+    private Map<String, Integer> crashMap = new HashMap<>();
+    private String data = Data.DATA;
+    private boolean initialNotificationSent = false;
+    private String previousStreetName = null;
+    private static final int SPEED_THRESHOLD = 15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
             try {
 //                get current location
                 Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                int speed = (int) ((location.getSpeed()*3600)/1000);
-                speed = 15;
+                int speed = (int) ((location.getSpeed() * 3600) / 1000);
+                speed = SPEED_THRESHOLD;
                 Log.e("SPEED", String.valueOf(speed));
                 if (speed < 15) {
                     continue;
-                } else if(!initialNotificationSent) {
+                } else if (!initialNotificationSent) {
                     this.initialNotificationSent = true;
                     showNotification("Safe Driving", "Stat Here");
                 }
@@ -112,9 +111,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-        this.canGetLocation = true;
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         try {
             startLocationUpdates();
         } catch (IOException e) {

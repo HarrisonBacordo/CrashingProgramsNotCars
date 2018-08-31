@@ -2558,4 +2558,6 @@ public class Data {
             "SIEVERS GROVE,9\n" +
             "HILL ST,9\n" +
             "MELROSE ROAD,9\n";
+
+//    public static final int[][] MOCK_COORDINATES = {[-41.126358, 174.836658], []}
 }
