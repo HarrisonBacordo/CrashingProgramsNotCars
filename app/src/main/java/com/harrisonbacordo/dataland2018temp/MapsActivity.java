@@ -19,29 +19,24 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.util.Log;
-import android.util.Pair;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -55,6 +50,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int SPEED_THRESHOLD = 15;
     HashMap<Double, Double> longLatMap = new HashMap<>();
     String longLats = Data.LONGLATS;
+    ArrayList<Loc> check;
+    int radius = 100;
 
 
     @Override
@@ -73,6 +70,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         createNotificationChannel();
 
+        check = generateClusters();
+        Log.e("Yess"+check.size(), "Yess"+check.size());
         String[] dataVals = data.split("\n");
         for (int i = 0; i < dataVals.length; i++) {
             String[] temp = dataVals[i].split(",");
@@ -111,20 +110,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }else{
             mMap.setMyLocationEnabled(true);
-
         }
-        for(Double p : longLatMap.keySet()){
+        Log.e("Size check"+check.size(), " size check");
+        for(Loc p : check){
             CircleOptions circleOptions = new CircleOptions()
-                    .center(new LatLng(longLatMap.get(p),p))
-                    .radius(15)
+                    .center(new LatLng(p.getLongCoord(), p.getLatCoord()))
+                    .radius((p.neighbourCount()+1)*25)
                     .strokeWidth(4)
                     .strokeColor(Color.argb(250, 231, 76, 60))
                     .fillColor(Color.argb(100, 231, 76, 60));
             mMap.addCircle(circleOptions);
 
         }
+
+//        for(Double p : longLatMap.keySet()){
+//            CircleOptions circleOptions = new CircleOptions()
+//                    .center(new LatLng(longLatMap.get(p),p))
+//                    .radius(150)
+//                    .strokeWidth(4)
+//                    .strokeColor(Color.argb(250, 231, 76, 60))
+//                    .fillColor(Color.argb(100, 231, 76, 60));
+//            mMap.addCircle(circleOptions);
+//
+//        }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(longLatMap.get((Double)longLatMap.keySet().toArray()[0]), (Double)longLatMap.keySet().toArray()[0])));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15.0f));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(13.0f));
     }
 
     /**
@@ -216,5 +226,86 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+    private ArrayList<Loc> generateClusters() {
+        double neighbourLimit = .125;
+        ArrayList<Loc> values = new ArrayList<>();
+        for (Double p : longLatMap.keySet()) {
+            values.add(new Loc(longLatMap.get(p), p));
+        }
+
+        for (Loc loc1 : values) {
+            for (Loc loc2 : values) {
+                if (loc1.equals(loc2)) {
+                    continue;
+                } else {
+                    double dist = getDistanceFromLatLonInKm(loc1, loc2);
+                    if(dist < neighbourLimit){
+                        loc1.addNeighbour(loc2);
+                    }
+                }
+            }
+        }
+        ArrayList<Loc> toDraw = new ArrayList<>();
+
+        Collections.sort(values, new Comparator<Loc>() {
+            @Override
+            public int compare(Loc o1, Loc o2) {
+                if(o1.neighbourCount() > o2.neighbourCount()){
+                    return -1;
+                }else if(o2.neighbourCount() > o1.neighbourCount()){
+                    return 1;
+                }else{
+                    return 0;
+                }
+            }
+        });
+
+        for(Loc l : values){
+            if(l.isNeighCheck()) {
+                for (Loc neigh : l.getNeighbours()) {
+                    neigh.setNeighCheck(false);
+                }
+                toDraw.add(l);
+            }
+        }
+
+        System.out.println(toDraw.size() + " check");
+//        Iterator iter = toDraw.iterator();
+//
+//        for(Loc sortedLoc : values){
+//            while(iter.hasNext()){
+//                Loc l = (Loc)iter.next();
+//                if(!sortedLoc.equals(l)){
+//                    ArrayList<Loc> g = l.getNeighbours();
+//                    if(!g.contains(sortedLoc)) {
+//                        toDraw.add(sortedLoc);
+//                    }
+//                }
+//            }
+//        }
+        return toDraw;
+    }
+
+     private double getDistanceFromLatLonInKm(Loc loc1, Loc loc2) {
+            double R = 6371; // Radius of the earth in km
+            double dLat = deg2rad(loc2.getLatCoord()-loc1.getLatCoord());  // deg2rad below
+            double dLon = deg2rad(loc2.getLongCoord()-loc1.getLongCoord());
+            double a =
+                    Math.sin(dLat/2) * Math.sin(dLat/2) +
+                            Math.cos(deg2rad(loc1.getLatCoord())) * Math.cos(deg2rad(loc2.getLatCoord())) *
+                                    Math.sin(dLon/2) * Math.sin(dLon/2)
+                    ;
+            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            double d = R * c; // Distance in km
+            return d;
+        }
+
+        private double deg2rad(double deg) {
+            return deg * (Math.PI/180);
+        }
+
+
+
 
 }
