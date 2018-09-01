@@ -279,7 +279,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private ArrayList<Loc> generateClusters() {
-        double neighbourLimit = .25;
+        double neighbourLimit = .18;
         ArrayList<Loc> values = new ArrayList<>();
         for (Double p : longLatMap.keySet()) {
             values.add(new Loc(longLatMap.get(p), p));
