@@ -19,6 +19,8 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,6 +37,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int MY_REQUEST_INT = 177;
@@ -45,12 +52,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean initialNotificationSent = false;
     private String previousStreetName = null;
     private static final int SPEED_THRESHOLD = 15;
+    HashMap<Double, Double> longLatMap = new HashMap<>();
+    String longLats = Data.LONGLATS;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        String[] dataVals = longLats.split("\n");
+        for (int i = 0; i < dataVals.length; i++) {
+            String[] temp = dataVals[i].split(",");
+            longLatMap.put(Double.parseDouble(temp[0]), Double.parseDouble(temp[1]));
+        }
+        int i = longLatMap.size();
+        Log.e(""+i, ""+i);
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -97,18 +114,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
 
         }
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        MarkerOptions marker = new MarkerOptions().position(sydney).title("Marker in Sydney");
-        CircleOptions circleOptions = new CircleOptions()
-                .center(sydney)
-                .radius(10000)
-                .strokeColor(Color.BLACK)
-                .fillColor(Color.RED)
-                .clickable(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.addCircle(circleOptions);
-        //mMap.addMarker(marker);
+        for(Double p : longLatMap.keySet()){
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(new LatLng(longLatMap.get(p),p))
+                    .radius(15)
+                    .strokeWidth(4)
+                    .strokeColor(Color.argb(250, 231, 76, 60))
+                    .fillColor(Color.argb(100, 231, 76, 60));
+            mMap.addCircle(circleOptions);
+
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(longLatMap.get((Double)longLatMap.keySet().toArray()[0]), (Double)longLatMap.keySet().toArray()[0])));
     }
 
     /**
