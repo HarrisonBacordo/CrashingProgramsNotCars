@@ -71,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         createNotificationChannel();
 
         check = generateClusters();
-        Log.e("Yess"+check.size(), "Yess"+check.size());
+
         String[] dataVals = data.split("\n");
         for (int i = 0; i < dataVals.length; i++) {
             String[] temp = dataVals[i].split(",");
@@ -111,14 +111,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }else{
             mMap.setMyLocationEnabled(true);
         }
-        Log.e("Size check"+check.size(), " size check");
+
         for(Loc p : check){
+            System.out.println(p.neighbourCount());
+            int alpha = 100;
             CircleOptions circleOptions = new CircleOptions()
                     .center(new LatLng(p.getLongCoord(), p.getLatCoord()))
-                    .radius((p.neighbourCount()+1)*25)
+                    .radius(Math.pow(p.neighbourCount()+3, 3))
                     .strokeWidth(4)
                     .strokeColor(Color.argb(250, 231, 76, 60))
-                    .fillColor(Color.argb(100, 231, 76, 60));
+                    .fillColor(Color.argb(alpha, 231, 76, 60));
             mMap.addCircle(circleOptions);
 
         }
@@ -126,13 +128,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        for(Double p : longLatMap.keySet()){
 //            CircleOptions circleOptions = new CircleOptions()
 //                    .center(new LatLng(longLatMap.get(p),p))
-//                    .radius(150)
+//                    .radius(15)
 //                    .strokeWidth(4)
 //                    .strokeColor(Color.argb(250, 231, 76, 60))
 //                    .fillColor(Color.argb(100, 231, 76, 60));
 //            mMap.addCircle(circleOptions);
-//
-//        }
+
+ //       }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(longLatMap.get((Double)longLatMap.keySet().toArray()[0]), (Double)longLatMap.keySet().toArray()[0])));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(13.0f));
     }
@@ -149,42 +152,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        while (true) {
-            try {
+//        while (true) {
+//            try {
 //                get current location
-                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                int speed = (int) ((location.getSpeed() * 3600) / 1000);
-                speed = SPEED_THRESHOLD;
-                Log.e("SPEED", String.valueOf(speed));
-                if (speed < 15) {
-                    continue;
-                } else if (!initialNotificationSent) {
-                    this.initialNotificationSent = true;
-                    showNotification("Safe Driving", "Stat Here");
-                }
-                double longitude = location.getLongitude();
-                double latitude = location.getLatitude();
-//                Get street name from location
-                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                String currentStreetName = addresses.get(0).getAddressLine(0);
-//                Skip checks if current street hasn't changed from previous
-                if (currentStreetName.equals(this.previousStreetName)) {
-                    return;
-                } else {
-//                    Parse street name to remove numbers
-                    this.previousStreetName = currentStreetName;
-                    currentStreetName = currentStreetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
-                    Log.e("STREET NAME", currentStreetName);
-//                    Check if dangerous road, if so, notify
-                    if (crashMap.containsKey(currentStreetName)) {
-                        Log.e("ALERT", "FOUND");
-                        showNotification("DANGEROUS ROAD", currentStreetName + " is a dangerous road. Be careful!");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                int speed = (int) ((location.getSpeed() * 3600) / 1000);
+//                speed = SPEED_THRESHOLD;
+//                Log.e("SPEED", String.valueOf(speed));
+//                if (speed < 15) {
+//                    continue;
+//                } else if (!initialNotificationSent) {
+//                    this.initialNotificationSent = true;
+//                    showNotification("Safe Driving", "Stat Here");
+//                }
+//                double longitude = location.getLongitude();
+//                double latitude = location.getLatitude();
+////                Get street name from location
+//                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+//                String currentStreetName = addresses.get(0).getAddressLine(0);
+////                Skip checks if current street hasn't changed from previous
+//                if (currentStreetName.equals(this.previousStreetName)) {
+//                    return;
+//                } else {
+////                    Parse street name to remove numbers
+//                    this.previousStreetName = currentStreetName;
+//                    currentStreetName = currentStreetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
+//                    Log.e("STREET NAME", currentStreetName);
+////                    Check if dangerous road, if so, notify
+//                    if (crashMap.containsKey(currentStreetName)) {
+//                        Log.e("ALERT", "FOUND");
+//                        showNotification("DANGEROUS ROAD", currentStreetName + " is a dangerous road. Be careful!");
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 
     }
 
@@ -228,7 +231,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private ArrayList<Loc> generateClusters() {
-        double neighbourLimit = .125;
+        double neighbourLimit = .25;
         ArrayList<Loc> values = new ArrayList<>();
         for (Double p : longLatMap.keySet()) {
             values.add(new Loc(longLatMap.get(p), p));
@@ -269,21 +272,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 toDraw.add(l);
             }
         }
-
-        System.out.println(toDraw.size() + " check");
-//        Iterator iter = toDraw.iterator();
-//
-//        for(Loc sortedLoc : values){
-//            while(iter.hasNext()){
-//                Loc l = (Loc)iter.next();
-//                if(!sortedLoc.equals(l)){
-//                    ArrayList<Loc> g = l.getNeighbours();
-//                    if(!g.contains(sortedLoc)) {
-//                        toDraw.add(sortedLoc);
-//                    }
-//                }
-//            }
-//        }
         return toDraw;
     }
 
