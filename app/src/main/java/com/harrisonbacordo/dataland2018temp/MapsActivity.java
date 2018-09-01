@@ -13,13 +13,17 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,10 +41,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int MY_REQUEST_INT = 177;
+    LocationRequest mLocationRequest = new LocationRequest();
+    FusedLocationProviderClient mFusedLocationClient;
+    LocationCallback mLocationCallback;
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     private Map<String, Integer> crashMap = new HashMap<>();
@@ -58,7 +66,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        mLocationRequest.setInterval(100);
+
+        mFusedLocationClient = new FusedLocationProviderClient(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                Location location = locationResult.getLastLocation();
+                startLocationUpdates(location);
+            }
+
+            ;
+        };
+
         String[] longLatVals = longLats.split("\n");
         for (int q = 0; q < longLatVals.length; q++) {
             String[] temp = longLatVals[q].split(",");
@@ -103,12 +129,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION}, MY_REQUEST_INT);
+                        Manifest.permission.ACCESS_FINE_LOCATION}, MY_REQUEST_INT);
             }
             return;
-        }else{
+        } else {
             mMap.setMyLocationEnabled(true);
         }
 
@@ -145,50 +171,72 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      *
      * @throws IOException
      */
-    private void startLocationUpdates() {
+    private void startLocationUpdates(Location location) {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 //        Another check required to avoid errors
+        try {
+//                get current location
+            int speed = (int) ((location.getSpeed() * 3600) / 1000);
+            speed = SPEED_THRESHOLD;
+            Log.e("SPEED", String.valueOf(speed));
+            if (speed < 15) {
+                return;
+            } else if (!initialNotificationSent) {
+                this.initialNotificationSent = true;
+                Random r = new Random();
+                String stat = Data.STATS[r.nextInt(Data.STATS.length)];
+                showNotification("Safe Driving", stat);
+            }
+//                double longitude = (double) Data.MOCK_COORDS[0].first;
+//                double latitude = (double) Data.MOCK_COORDS[0].second;
+
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+//                Get street name from location
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            String currentStreetName = addresses.get(0).getAddressLine(0);
+//                Skip checks if current street hasn't changed from previous
+            Log.e("check", currentStreetName + ": " + latitude + ":  L=" + longitude);
+            if (currentStreetName.equals(this.previousStreetName)) {
+            } else {
+//                    Parse street name to remove numbers
+                this.previousStreetName = currentStreetName;
+                currentStreetName = currentStreetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
+                Log.e("STREET NAME", currentStreetName);
+//                    Check if dangerous road, if so, notify
+                if (crashMap.containsKey(currentStreetName)) {
+                    Log.e("ALERT", "FOUND");
+                        showNotification("DANGEROUS ROAD", currentStreetName + " is a dangerous road. Be careful!");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startLocationUpdates();
+
+    }
+
+    private void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-//        while (true) {
-//            try {
-//                get current location
-//                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//                int speed = (int) ((location.getSpeed() * 3600) / 1000);
-//                speed = SPEED_THRESHOLD;
-//                Log.e("SPEED", String.valueOf(speed));
-//                if (speed < 15) {
-//                    continue;
-//                } else if (!initialNotificationSent) {
-//                    this.initialNotificationSent = true;
-//                    showNotification("Safe Driving", "Stat Here");
-//                }
-//                double longitude = location.getLongitude();
-//                double latitude = location.getLatitude();
-////                Get street name from location
-//                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-//                String currentStreetName = addresses.get(0).getAddressLine(0);
-////                Skip checks if current street hasn't changed from previous
-//                if (currentStreetName.equals(this.previousStreetName)) {
-//                    return;
-//                } else {
-////                    Parse street name to remove numbers
-//                    this.previousStreetName = currentStreetName;
-//                    currentStreetName = currentStreetName.split(",")[0].replaceAll("[0-9]*", "").toUpperCase().replace("RD", "ROAD").trim();
-//                    Log.e("STREET NAME", currentStreetName);
-////                    Check if dangerous road, if so, notify
-//                    if (crashMap.containsKey(currentStreetName)) {
-//                        Log.e("ALERT", "FOUND");
-//                        showNotification("DANGEROUS ROAD", currentStreetName + " is a dangerous road. Be careful!");
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                mLocationCallback,
+                null /* Looper */);
     }
 
     @Override

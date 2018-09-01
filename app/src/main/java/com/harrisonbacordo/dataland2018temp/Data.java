@@ -1,5 +1,8 @@
 package com.harrisonbacordo.dataland2018temp;
 
+import android.graphics.Point;
+import android.util.Pair;
+
 /**
  * Created by Harrison on 08/31/2018.
  */
@@ -2306,7 +2309,14 @@ public class Data {
             "HOLLY GROVE,1\n" +
             "MT WGTN OFF SBD,1\n";
 
+    public static final Pair[] MOCK_COORDS = new Pair[]{
+            new Pair<>(-41.294809, 174.777487),
+            new Pair<>(-41.307913, 174.777766),
+            new Pair<>(-41.218063, 174.880086)
+    };
+
     public static final String DATA = "SH 1N,2086\n" +
+            "PIPITEA STREET,45\n" +
             "SH 2,531\n" +
             "TITAHI BAY ROAD,223\n" +
             "HUTT ROAD,213\n" +
