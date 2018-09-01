@@ -249,8 +249,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
-                .setContentText(content)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(content));
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
