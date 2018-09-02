@@ -2,7 +2,7 @@
 
 Crashing Cars not programs 
 
-![Screenshot of software](https://github.com/HarrisonBacordo/Dataland2018/blob/master/screenshot.PNG)
+![Screenshot of software](https://github.com/HarrisonBacordo/Dataland2018/blob/master/screenshot.PNG | height=200)
 
 This project is a joint effort of
 - [Dylan Kumar](https://github.com/dknz2008/)
