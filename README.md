@@ -11,7 +11,7 @@ This project is a joint effort of
 - [Harrison Bacardo](https://github.com/HarrisonBacordo/)
 - [Sean Stevenson](https://github.com/sean-stevenson)
 - [Krishna Kapadis](https://github.com/krishnaKapadia)
-- [Yohan de Rose]()
+- [Yohan de Rose](https://github.com/yohanderose)
 
 Presentation:
 https://docs.google.com/presentation/d/1JlRcP2aKOYs2uEwBQ0JOhJNWQN2TLo73stWLn83oeU8/edit#slide=id.g4142bf53ce_13_29
