@@ -3,8 +3,8 @@
 Crashing Cars not programs 
 
 This project is a joint effort of
-- [Dylan Kumar](https://www.instagram.com/dknz2008/)
-- [Harrison Bacardo](https://www.instagram.com/HarrisonBacordo/)
+- [Dylan Kumar](https://github.com/dknz2008/)
+- [Harrison Bacardo](https://github.com/HarrisonBacordo/)
 - [Sean Stevenson](https://github.com/sean-stevenson)
 - [Krishna Kapadis](https://github.com/krishnaKapadia)
 - [Yohan de Rose]()
