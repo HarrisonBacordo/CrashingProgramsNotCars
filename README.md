@@ -10,7 +10,7 @@ This project is a joint effort of
 - [Dylan Kumar](https://github.com/dknz2008/)
 - [Harrison Bacardo](https://github.com/HarrisonBacordo/)
 - [Sean Stevenson](https://github.com/sean-stevenson)
-- [Krishna Kapadis](https://github.com/krishnaKapadia)
+- [Krishna Kapadia](https://github.com/krishnaKapadia)
 - [Yohan de Rose](https://github.com/yohanderose)
 
 Presentation:
